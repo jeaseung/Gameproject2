@@ -14,9 +14,8 @@ public:
 	void SpawnActor(class Actor* NewActor);
 	void DestoyActor(class Actor* DestroyActor);
 
-	void Tick();
+	void Tick(SDL_Event& MyEvent);
 	void Render(SDL_Renderer* MyRenderer);
-	void Input();
 	void BeginPlay();
 
 	const std::vector<Actor*>&GetActorList() { return ActorList; }

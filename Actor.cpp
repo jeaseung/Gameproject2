@@ -19,7 +19,7 @@ Actor::~Actor()
 	std::cout << GetShape() << std::endl;
 }
 
-void Actor::Tick()
+void Actor::Tick(SDL_Event& MyEvent)
 {
 }
 

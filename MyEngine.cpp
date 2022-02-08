@@ -192,7 +192,7 @@ void MyEngine::Tick()
 
 		break;
 	}
-	CurrentWorld->Tick();
+	CurrentWorld->Tick(MyEvent);
 }
 
 void MyEngine::Render()
@@ -215,6 +215,6 @@ void MyEngine::Input()
 	//Input
 	SDL_PollEvent(&MyEvent);
 
-	CurrentWorld->Input();
+
 
 }

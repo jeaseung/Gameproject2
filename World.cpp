@@ -54,11 +54,11 @@ void World::DestoyActor(Actor* DestroyActor)
 
 }
 
-void World::Tick()
+void World::Tick(SDL_Event& MyEvent)
 {
 	for (auto SelectedActor : ActorList)
 	{
-		SelectedActor->Tick();
+		SelectedActor->Tick(MyEvent);
 	}
 }
 
@@ -70,9 +70,6 @@ void World::Render(SDL_Renderer* MyRenderer)
 	}
 }
 
-void World::Input()
-{
-}
 
 void World::BeginPlay()
 {
