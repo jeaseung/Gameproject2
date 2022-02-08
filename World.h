@@ -2,6 +2,7 @@
 #ifndef __WORLD_H__
 #define __WORLD_H__
 #include "Actor.h"
+#include "SDL.h"
 #include <vector>
 
 class World
@@ -14,7 +15,7 @@ public:
 	void DestoyActor(class Actor* DestroyActor);
 
 	void Tick();
-	void Render();
+	void Render(SDL_Renderer* MyRenderer);
 	void Input();
 	void BeginPlay();
 

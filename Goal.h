@@ -11,6 +11,7 @@ public:
 	virtual ~Goal();
 
 	
+	
 
 };
 

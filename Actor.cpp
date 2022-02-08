@@ -23,8 +23,13 @@ void Actor::Tick()
 {
 }
 
-void Actor::Render()
+void Actor::Render(SDL_Renderer* MyRenderer)
 {
+	SDL_SetRenderDrawColor(MyRenderer, Color.r, Color.g, Color.b, Color.a);
+	SDL_Rect Rect = { GetX() * TileSize,GetY() * TileSize,TileSize,TileSize };
+
+	SDL_RenderFillRect(MyRenderer, &Rect);
+	
 }
 
 void Actor::BeginPlay()

@@ -10,7 +10,7 @@ public:
 	Player();
 	Player(int NewX, int NewY);
 	virtual ~Player();
-
+	
 };
 
 #endif // !__PLAYER_H__
