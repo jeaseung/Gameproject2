@@ -12,7 +12,12 @@ public:
 	Player(int NewX, int NewY);
 	virtual ~Player();
 	
-	virtual void Tick(SDL_Event& MyEvent) override;
+	virtual void Tick() override;
+
+	virtual void Render() override;
+	SDL_Surface* Surface;
+	SDL_Texture* Texture;
+	
 };
 
 #endif // !__PLAYER_H__

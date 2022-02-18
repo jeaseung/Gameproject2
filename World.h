@@ -4,6 +4,9 @@
 #include "Actor.h"
 #include "SDL.h"
 #include <vector>
+#include<memory>
+
+class Actor;
 
 class World
 {
@@ -11,18 +14,21 @@ public:
 	World();
 	virtual ~World();
 
-	void SpawnActor(class Actor* NewActor);
-	void DestoyActor(class Actor* DestroyActor);
+	void SpawnActor(std::shared_ptr< Actor> NewActor);
+	void DestoyActor(std::shared_ptr< Actor> DestroyActor);
 
-	void Tick(SDL_Event& MyEvent);
-	void Render(SDL_Renderer* MyRenderer);
+	void Tick();
+	void Render();
 	void BeginPlay();
 
-	const std::vector<Actor*>&GetActorList() { return ActorList; }
-
+	const std::vector<std::shared_ptr< Actor>>&GetActorList() { return ActorList; }
+	Uint64 GetWorldDeltaSeconds() { return DeltaSeconds; };
 
 protected:
-	std::vector<class Actor*> ActorList;
+	std::vector<std::shared_ptr< Actor>>ActorList;
+
+	Uint64 LastTick;
+	Uint64 DeltaSeconds;
 
 };
 

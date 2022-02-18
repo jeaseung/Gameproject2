@@ -8,6 +8,9 @@
 #include "Goal.h"
 #include "Player.h"
 #include "Wall.h"
+#include "Enemy.h"
+
+#include<memory>
 
 
 class World;
@@ -26,23 +29,29 @@ public:
 	void Run();
 	void Stop();
 
-	void SpawnActor(Actor* NewActor);
-	void DestroyActor(Actor* DstroyActor);
+	void SpawnActor(std::shared_ptr< Actor> NewActor);
+	void DestroyActor(std::shared_ptr< Actor> DstroyActor);
 	
 
 	void LoadLevel(std::string LoadMapName);
 	void SaveLevel(std::string SaveMapName);
 
+	inline static SDL_Window* GetWindow() { return MyWindow; }
+	inline static SDL_Renderer* GetRenderer() { return MyRenderer; }
+	inline static SDL_Event& GetEvent() { return MyEvent; }
+	inline static std::unique_ptr<World>& GetWorld() { return CurrentWorld; }
+	
+
 protected:
 	bool bIsRuning = true;
-	World* CurrentWorld;
+	static std::unique_ptr<World> CurrentWorld;
 	void BeginPlay();
 	void Tick();
 	void Render();
 	void Input();
-	SDL_Window* MyWindow;
-	SDL_Renderer* MyRenderer;
-	SDL_Event MyEvent;
+	static SDL_Window* MyWindow;
+	static SDL_Renderer* MyRenderer;
+	static SDL_Event MyEvent;
 
 
 };

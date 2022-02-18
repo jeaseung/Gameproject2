@@ -1,4 +1,13 @@
 #include "MyEngine.h"
+#include "World.h"
+#include <fstream>
+#include "Wall.h"
+#include "Player.h"
+#include "Goal.h"
+#include "Floor.h"
+#include <iostream>
+#include "Enemy.h"
+
 
 //MyEngine::MyEngine()
 //{
@@ -6,18 +15,24 @@
 //
 //}
 
+SDL_Window* MyEngine::MyWindow = nullptr;
+SDL_Renderer* MyEngine::MyRenderer = nullptr;
+SDL_Event MyEngine::MyEvent;
+std::unique_ptr<World> MyEngine :: CurrentWorld;
+
 MyEngine::MyEngine(std::string Title, std::string LevelName, int Width, int Height)
 {
-	CurrentWorld = new World();
+	CurrentWorld = std::make_unique<World>();
 	bIsRuning = true;
+	Init(Title, Width, Height);
 	LoadLevel(LevelName);
 
-	Init(Title, Width, Height);
+	
 }
 
 MyEngine::~MyEngine()
 {
-	delete CurrentWorld;
+	//delete CurrentWorld;
 	CurrentWorld = nullptr;
 	bIsRuning = false;
 
@@ -71,12 +86,12 @@ void MyEngine::Stop()
 	bIsRuning = false;
 }
 
-void MyEngine::SpawnActor(Actor* NewActor)
+void MyEngine::SpawnActor(std::shared_ptr< Actor> NewActor)
 {
 	CurrentWorld->SpawnActor(NewActor);
 }
 
-void MyEngine::DestroyActor(Actor* DstroyActor)
+void MyEngine::DestroyActor(std::shared_ptr< Actor> DstroyActor)
 {
 	CurrentWorld->DestoyActor(DstroyActor);
 }
@@ -98,17 +113,27 @@ void MyEngine::LoadLevel(std::string LoadMapName)
 			Y++;
 			X = 0;
 			continue;
+		case ' ':
+			SpawnActor(std::make_shared<Floor>(X, Y));
+			break;
 
 		case '*':
-			SpawnActor(new Wall(X, Y));
+			SpawnActor(std::make_shared< Wall> (X, Y));
+			SpawnActor(std::make_shared<Floor>(X, Y));
 			break;
 
 		case 'P':
-			SpawnActor(new Player(X, Y));
+			SpawnActor(std::make_shared< Player> (X, Y));
+			SpawnActor(std::make_shared<Floor>(X, Y));
 			break;
 
 		case 'G':
-			SpawnActor(new Goal(X, Y));
+			SpawnActor(std::make_shared< Goal> (X, Y));
+			SpawnActor(std::make_shared<Floor>(X, Y));
+			break;
+		case 'E':
+			SpawnActor(std::make_shared<Enemy>(X, Y));
+			SpawnActor(std::make_shared<Floor>(X, Y));
 			break;
 		}
 
@@ -125,8 +150,8 @@ void MyEngine::SaveLevel(std::string SaveMapName)
 	int MaxX = -1;
 	int MaxY = -1;
 
-	std::vector<Actor*> ActorList = CurrentWorld->GetActorList();
-
+	//std::vector<std::shared_ptr< Actor>> ActorList = CurrentWorld->GetActorList(); 형을 쉽게 알수 있는 것은 auto를 써도 된다. 
+	auto ActorList = CurrentWorld->GetActorList();
 	for (auto SelectActor : ActorList)
 	{
 		if (MaxX <= SelectActor->GetX())
@@ -141,13 +166,13 @@ void MyEngine::SaveLevel(std::string SaveMapName)
 
 	bool bIsWrite = false;
 
-	for (int Y = 0; Y < MaxY; Y++)
+	for (int Y = 0; Y <= MaxY; Y++)
 	{
-		for (int X = 0; X < MaxX; X++) 
+		for (int X = 0; X <= MaxX; X++) 
 		{
 			for (auto SelectActor : ActorList)
 			{
-				if (SelectActor->GetX() == X && SelectActor->GetY())
+				if (SelectActor->GetX() == X && SelectActor->GetY()==Y)
 				{
 					WriteFile.put(SelectActor->GetShape());
 					bIsWrite=true;
@@ -192,7 +217,7 @@ void MyEngine::Tick()
 
 		break;
 	}
-	CurrentWorld->Tick(MyEvent);
+	CurrentWorld->Tick();
 }
 
 void MyEngine::Render()
@@ -201,7 +226,7 @@ void MyEngine::Render()
 	SDL_RenderClear(MyRenderer);
 	//그릴 리스트 준비 
 	//PreRender(그릴 준비, 그릴 물체 배치)
-	CurrentWorld->Render(MyRenderer);
+	CurrentWorld->Render();
 
 	//GPU가 그린다.
 		//Render

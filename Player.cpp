@@ -1,4 +1,6 @@
 #include "Player.h"
+#include "MyEngine.h"
+#include "World.h"
 
 Player::Player()
 {
@@ -9,6 +11,10 @@ Player::Player()
 	Color.g = 0x00;
 	Color.b = 0x00;
 	Color.a = 0xff;
+	ZOrder = 2;
+
+	
+	
 }
 
 Player::Player(int NewX, int NewY)
@@ -21,33 +27,55 @@ Player::Player(int NewX, int NewY)
 	Color.g = 0x00;
 	Color.b = 0x00;
 	Color.a = 0xff;
-
+	ZOrder = 2;
+	Surface = SDL_LoadBMP("Data/wall.bmp");
+	Texture = SDL_CreateTextureFromSurface(MyEngine::GetRenderer(), Surface);
 }
 
 Player::~Player()
 {
+	if (Surface)
+	{
+		SDL_FreeSurface(Surface);
+	}
+	if (Texture)
+	{
+		SDL_DestroyTexture(Texture);
+	}
 }
 
-void Player::Tick(SDL_Event& MyEvent)
+void Player::Tick()
 {
-	if (MyEvent.type == SDL_KEYDOWN)
+	MyEngine::GetWorld();
+
+	if (MyEngine::GetEvent().type == SDL_KEYDOWN)
 	{
-		switch (MyEvent.key.keysym.sym)
+		switch (MyEngine::GetEvent().key.keysym.sym)
 		{
 		case SDLK_LEFT:
-			X--;
+			CanMove(X - 1, Y);
 			break;
 		case SDLK_RIGHT:
-			X++;
+			CanMove(X + 1, Y);
 			break;
 		case SDLK_UP:
-			Y--;
+			CanMove(X, Y-1);
 			break;
 		case SDLK_DOWN:
-			Y++;
+			CanMove(X , Y+1);
 			break;
 
 		}
 	}
 }
+
+void Player::Render()
+{
+	SDL_Rect SrcRect = { 0,0,Surface->w, Surface->h };
+	SDL_Rect DestRect = { GetX() * TileSize,GetY() * TileSize,TileSize,TileSize };
+
+	SDL_RenderCopy(MyEngine::GetRenderer(), Texture, &SrcRect, &DestRect);
+}
+
+
 

@@ -9,7 +9,7 @@ public:
 	Wall();
 	Wall(int NewX, int NewY);
 	virtual ~Wall();
-	virtual void Render(SDL_Renderer* MyRenderer) override;
+	virtual void Render() override;
 };
 
 #endif // !__WALL_H__

@@ -1,4 +1,5 @@
 #include "World.h"
+#include<algorithm>
 
 World::World()
 {
@@ -20,7 +21,7 @@ World::~World()
 
 	for (auto currentActor : ActorList)
 	{
-		delete currentActor;
+		//delete currentActor;
 		currentActor = nullptr;
 	}
 
@@ -28,12 +29,14 @@ World::~World()
 	
 }
 
-void World::SpawnActor(Actor* NewActor)
+void World::SpawnActor(std::shared_ptr< Actor> NewActor)
 {
 	ActorList.push_back(NewActor);
+
+	sort(ActorList.begin(), ActorList.end(),Actor::Compare);
 }
 
-void World::DestoyActor(Actor* DestroyActor)
+void World::DestoyActor(std::shared_ptr< Actor> DestroyActor)
 {
 	
 	/*for (auto iter = ActorList.begin(); iter != ActorList.end(); iter++)
@@ -49,25 +52,28 @@ void World::DestoyActor(Actor* DestroyActor)
 
 	ActorList.erase(find(ActorList.begin(), ActorList.end(), DestroyActor));
 
-	delete DestroyActor;
+	//delete DestroyActor;
 	DestroyActor = nullptr;
 
 }
 
-void World::Tick(SDL_Event& MyEvent)
+void World::Tick()
 {
+	DeltaSeconds = SDL_GetTicks64() - LastTick;
 	for (auto SelectedActor : ActorList)
 	{
-		SelectedActor->Tick(MyEvent);
+		SelectedActor->Tick();
 	}
 }
 
-void World::Render(SDL_Renderer* MyRenderer)
+void World::Render()
 {
 	for (auto SelectedActor : ActorList)
 	{
-		SelectedActor->Render(MyRenderer);
+		SelectedActor->Render();
 	}
+
+	LastTick = SDL_GetTicks64();
 }
 
 
